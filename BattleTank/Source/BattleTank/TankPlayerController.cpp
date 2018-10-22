@@ -15,7 +15,19 @@ void ATankPlayerController::BeginPlay() {
 
 }
 
+void ATankPlayerController::Tick(float DeltaTime) {
+	Super::Tick(DeltaTime);
+	AimTowardsCrossHair();
+}
+
 ATank* ATankPlayerController::GetControlledTank() const {
 	return Cast<ATank>(GetPawn());
 }
 
+void ATankPlayerController::AimTowardsCrossHair() {
+	if (!GetControlledTank()) { return; }
+
+	// Get the world location if linetrace through crosshair
+	//if it hits the landscape
+		//Tell controlled tank to aim at this point
+}
