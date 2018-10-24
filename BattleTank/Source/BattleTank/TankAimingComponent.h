@@ -6,6 +6,7 @@
 #include "Components/ActorComponent.h"
 #include "TankAimingComponent.generated.h"
 
+class UTankBarrel; //Forward declaration of the Tank Barrel
 
 UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
 class BATTLETANK_API UTankAimingComponent : public UActorComponent {
@@ -15,7 +16,9 @@ public:
 	// Sets default values for this component's properties
 	UTankAimingComponent();
 
-	void SetBarrelReference(UStaticMeshComponent* BarrelToSet);
+	void SetBarrelReference(UTankBarrel* BarrelToSet);
+
+	//TODO: add SetTurretReference
 
 	// Called when the game starts
 	virtual void BeginPlay() override;
@@ -25,6 +28,8 @@ public:
 
 	void AimAt(FVector HitLocation, float LaunchSpeed);
 
+	void MoveBarrel(FVector MoveBarrel);
+
 private:
-	UStaticMeshComponent* Barrel = nullptr;
+	UTankBarrel* Barrel = nullptr;
 };
