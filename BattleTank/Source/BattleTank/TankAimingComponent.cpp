@@ -3,6 +3,7 @@
 #include "TankAimingComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "TankBarrel.h"
+#include "TankTurret.h"
 #include "Kismet/GameplayStatics.h"
 #include "Engine/World.h"
 
@@ -11,7 +12,7 @@
 UTankAimingComponent::UTankAimingComponent() {
 	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
 	// off to improve performance if you don't need them.
-	PrimaryComponentTick.bCanEverTick = true;
+	PrimaryComponentTick.bCanEverTick = false;
 
 }
 
@@ -19,8 +20,6 @@ UTankAimingComponent::UTankAimingComponent() {
 // Called when the game starts
 void UTankAimingComponent::BeginPlay() {
 	Super::BeginPlay();
-
-
 }
 
 
@@ -40,19 +39,37 @@ void UTankAimingComponent::AimAt(FVector HitLocation, float LaunchSpeed) {
 		ESuggestProjVelocityTraceOption::DoNotTrace)) {
 		auto AimDirection = OutLaunchVelocity.GetSafeNormal();
 		MoveBarrel(AimDirection);
+		MoveTurret(AimDirection);
 	}
 }
 
 void UTankAimingComponent::SetBarrelReference(UTankBarrel* BarrelToSet) {
+	if (!BarrelToSet) { return; }
 	Barrel = BarrelToSet;
 }
 
+void UTankAimingComponent::SetTurretReference(UTankTurret* TurretToSet) {
+	if (!TurretToSet) { return; }
+	Turret = TurretToSet;
+}
+
 void UTankAimingComponent::MoveBarrel(FVector AimDirection) {
-	//Calculate difference between current rotation and the Aimdirection
+	auto DeltaRotator = GetDeltaRotation(AimDirection);
+
+	Barrel->Elevate(DeltaRotator.Pitch);
+}
+
+void UTankAimingComponent::MoveTurret(FVector AimDirection) {
+	auto DeltaRotator = GetDeltaRotation(AimDirection);
+
+	Turret->AzimuthRotation(DeltaRotator.Yaw);
+}
+
+//Calculate difference between current rotation and the Aimdirection
+FRotator UTankAimingComponent::GetDeltaRotation(FVector AimDirection) {
 	auto BarrelRotator = Barrel->GetForwardVector().Rotation();
 	auto AimAsRotator = AimDirection.Rotation();
 	auto DeltaRotator = AimAsRotator - BarrelRotator;
 
-
-	Barrel->Elevate(DeltaRotator.Pitch);
+	return DeltaRotator;
 }
