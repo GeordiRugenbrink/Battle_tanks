@@ -12,16 +12,19 @@
 UTankAimingComponent::UTankAimingComponent() {
 	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
 	// off to improve performance if you don't need them.
-	PrimaryComponentTick.bCanEverTick = true;
-
+	bWantsBeginPlay = true;
+	PrimaryComponentTick.bCanEverTick = false;
 }
-
 
 // Called when the game starts
 void UTankAimingComponent::BeginPlay() {
 	Super::BeginPlay();
 }
 
+void UTankAimingComponent::Initialize(UTankBarrel* BarrelToSet, UTankTurret* TurretToSet) {
+	Barrel = BarrelToSet;
+	Turret = TurretToSet;
+}
 
 // Called every frame
 void UTankAimingComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) {
@@ -33,39 +36,33 @@ void UTankAimingComponent::AimAt(FVector HitLocation, float LaunchSpeed) {
 	if (!Barrel) { return; }
 	FVector OutLaunchVelocity;
 	FVector StartLocation = Barrel->GetSocketLocation(FName("Projectile"));
+	bool bHaveAimSolution = UGameplayStatics::SuggestProjectileVelocity(this, OutLaunchVelocity, StartLocation, HitLocation, LaunchSpeed, false, 0, 0,
+		ESuggestProjVelocityTraceOption::DoNotTrace);
 
 	//Calculate the OutLaunchvelocity
-	if (UGameplayStatics::SuggestProjectileVelocity(this, OutLaunchVelocity, StartLocation, HitLocation, LaunchSpeed, false, 0, 0,
-		ESuggestProjVelocityTraceOption::DoNotTrace)) {
+	if (bHaveAimSolution) {
 		auto AimDirection = OutLaunchVelocity.GetSafeNormal();
 		MoveBarrel(AimDirection);
 		MoveTurret(AimDirection);
 	}
 }
 
-void UTankAimingComponent::SetBarrelReference(UTankBarrel* BarrelToSet) {
-	if (!BarrelToSet) { return; }
-	Barrel = BarrelToSet;
-}
-
-void UTankAimingComponent::SetTurretReference(UTankTurret* TurretToSet) {
-	if (!TurretToSet) { return; }
-	Turret = TurretToSet;
-}
-
 void UTankAimingComponent::MoveBarrel(FVector AimDirection) {
+	if (!Barrel) { return; }
 	auto DeltaRotator = GetDeltaRotation(AimDirection);
 
+
 	Barrel->Elevate(DeltaRotator.Pitch);
+
 }
 
 void UTankAimingComponent::MoveTurret(FVector AimDirection) {
+	if (!Turret) { return; }
 	auto DeltaRotator = GetDeltaRotation(AimDirection);
 
 	Turret->AzimuthRotation(DeltaRotator.Yaw);
 }
 
-//Calculate difference between current rotation and the Aimdirection
 FRotator UTankAimingComponent::GetDeltaRotation(FVector AimDirection) {
 	auto BarrelRotator = Barrel->GetForwardVector().Rotation();
 	auto AimAsRotator = AimDirection.Rotation();
