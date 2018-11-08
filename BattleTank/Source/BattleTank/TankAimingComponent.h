@@ -15,6 +15,7 @@ enum class EAimingState : uint8 {
 
 class UTankBarrel; //Forward declaration of the Tank Barrel
 class UTankTurret;
+class AProjectile;
 
 UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
 class BATTLETANK_API UTankAimingComponent : public UActorComponent {
@@ -32,6 +33,9 @@ public:
 
 	void AimAt(FVector HitLocation);
 
+	UFUNCTION(BlueprintCallable, Category = "Firing")
+		void Fire();
+
 	void MoveBarrel(FVector AimDirection);
 
 	void MoveTurret(FVector AimDirection);
@@ -47,6 +51,14 @@ private:
 
 	UTankBarrel* Barrel = nullptr;
 	UTankTurret* Turret = nullptr;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Setup")
+		TSubclassOf<AProjectile> ProjectileBlueprint = nullptr;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Firing")
+		float ReloadTimeInSeconds = 3.0f;
+
+	double LastFireTime = 0;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Firing")
 		float LaunchSpeed = 5000;
