@@ -4,7 +4,6 @@
 #include "TankBarrel.h"
 #include "Projectile.h"
 #include "Engine/World.h"
-#include "TankAimingComponent.h"
 
 
 // Sets default values
@@ -15,14 +14,6 @@ ATank::ATank() {
 
 void ATank::BeginPlay() {
 	Super::BeginPlay(); //needed for BP to run
-
-	TankAimingComponent = FindComponentByClass<UTankAimingComponent>();
-}
-
-void ATank::AimAt(FVector HitLocation) {
-	if (ensure(TankAimingComponent)) {
-		TankAimingComponent->AimAt(HitLocation, LaunchSpeed);
-	}
 }
 
 void ATank::Fire() {
@@ -34,7 +25,7 @@ void ATank::Fire() {
 			Barrel->GetSocketRotation(FName("Projectile")));
 
 		if (!ensure(Projectile)) { return; }
-		Projectile->LaunchProjectile(LaunchSpeed);
+		//Projectile->LaunchProjectile(LaunchSpeed);
 		LastFireTime = FPlatformTime::Seconds();
 	}
 }
