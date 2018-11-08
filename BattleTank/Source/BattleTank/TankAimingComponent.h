@@ -28,9 +28,6 @@ public:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 
-	// Called every frame
-	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
-
 	void AimAt(FVector HitLocation);
 
 	UFUNCTION(BlueprintCallable, Category = "Firing")
@@ -49,6 +46,11 @@ private:
 	// Sets default values for this component's properties
 	UTankAimingComponent();
 
+	// Called every frame
+	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+
+	bool IsBarrelMoving();
+
 	UTankBarrel* Barrel = nullptr;
 	UTankTurret* Turret = nullptr;
 
@@ -59,6 +61,8 @@ private:
 		float ReloadTimeInSeconds = 3.0f;
 
 	double LastFireTime = 0;
+
+	FVector AimDirection;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Firing")
 		float LaunchSpeed = 5000;
