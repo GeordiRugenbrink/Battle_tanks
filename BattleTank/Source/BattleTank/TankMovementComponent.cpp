@@ -8,7 +8,7 @@
 Initializes the Tracks of the tank
 */
 void UTankMovementComponent::Initialize(UTankTrack* LeftTrackToSet, UTankTrack* RightTrackToSet) {
-	if (!LeftTrackToSet || !RightTrackToSet) { return; }
+	if (!ensure(LeftTrackToSet || RightTrackToSet)) { return; }
 	LeftTrack = LeftTrackToSet;
 	RightTrack = RightTrackToSet;
 }
@@ -17,6 +17,7 @@ void UTankMovementComponent::Initialize(UTankTrack* LeftTrackToSet, UTankTrack* 
 Makes tank move forward by setting the same force on both the tracks
 */
 void UTankMovementComponent::IntendMoveForward(float Throw) {
+	if (!ensure(LeftTrack && RightTrack)) { return; }
 	LeftTrack->SetThrottle(Throw);
 	RightTrack->SetThrottle(Throw);
 }
@@ -25,6 +26,7 @@ void UTankMovementComponent::IntendMoveForward(float Throw) {
 Makes the tank turn by setting a negative force on one of the tracks and a positive in the other one
 */
 void UTankMovementComponent::IntendTurnRight(float Throw) {
+	if (!ensure(LeftTrack && RightTrack)) { return; }
 	LeftTrack->SetThrottle(Throw);
 	RightTrack->SetThrottle(-Throw);
 }
