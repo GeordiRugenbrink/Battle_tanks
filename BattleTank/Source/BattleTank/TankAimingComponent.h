@@ -10,7 +10,8 @@ UENUM()
 enum class EAimingState : uint8 {
 	Reloading,
 	Aiming,
-	Ready
+	Ready,
+	NoAmmo
 };
 
 class UTankBarrel; //Forward declaration of the Tank Barrel
@@ -41,6 +42,9 @@ public:
 
 	FRotator GetDeltaRotation(FVector AimDirection);
 
+	UFUNCTION(BlueprintCallable, Category = "Firing")
+		int GetAmmoLeft()const;
+
 protected:
 	UPROPERTY(BlueprintReadOnly, Category = "State")
 		EAimingState AimingState = EAimingState::Reloading;
@@ -63,6 +67,8 @@ private:
 		float ReloadTimeInSeconds = 3.0f;
 
 	double LastFireTime = 0;
+
+	int CurrentAmmo = 3;
 
 	FVector AimDirection;
 
