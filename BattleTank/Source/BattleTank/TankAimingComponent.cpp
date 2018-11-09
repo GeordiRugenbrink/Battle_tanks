@@ -89,8 +89,12 @@ void UTankAimingComponent::MoveBarrel(FVector AimDirection) {
 void UTankAimingComponent::MoveTurret(FVector AimDirection) {
 	if (!ensure(Turret)) { return; }
 	auto DeltaRotator = GetDeltaRotation(AimDirection);
-
-	Turret->AzimuthRotation(DeltaRotator.Yaw);
+	if (DeltaRotator.Yaw < 180) {
+		Turret->AzimuthRotation(DeltaRotator.Yaw);
+	}
+	else {
+		Turret->AzimuthRotation(-DeltaRotator.Yaw);
+	}
 }
 
 FRotator UTankAimingComponent::GetDeltaRotation(FVector AimDirection) {
