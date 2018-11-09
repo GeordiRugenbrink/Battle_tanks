@@ -20,7 +20,9 @@ void ATankAIController::Tick(float DeltaTime) {
 	if (ensure(AimingComponent)) {
 		//Aim towards the player
 		AimingComponent->AimAt(PlayerTank->GetActorLocation());
-		AimingComponent->Fire();
+		if (AimingComponent->GetAimingState() == EAimingState::Ready) {
+			AimingComponent->Fire();
+		}
 	}
 }
 

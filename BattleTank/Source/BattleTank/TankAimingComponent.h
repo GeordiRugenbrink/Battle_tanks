@@ -33,6 +33,8 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Firing")
 		void Fire();
 
+	EAimingState GetAimingState() const;
+
 	void MoveBarrel(FVector AimDirection);
 
 	void MoveTurret(FVector AimDirection);

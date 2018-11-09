@@ -79,6 +79,10 @@ void UTankAimingComponent::Fire() {
 	}
 }
 
+EAimingState UTankAimingComponent::GetAimingState() const {
+	return AimingState;
+}
+
 void UTankAimingComponent::MoveBarrel(FVector AimDirection) {
 	if (!ensure(Barrel)) { return; }
 	auto DeltaRotator = GetDeltaRotation(AimDirection);
