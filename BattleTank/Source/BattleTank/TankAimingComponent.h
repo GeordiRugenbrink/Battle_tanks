@@ -43,7 +43,7 @@ public:
 	FRotator GetDeltaRotation(FVector AimDirection);
 
 	UFUNCTION(BlueprintCallable, Category = "Firing")
-		int GetAmmoLeft()const;
+		int32 GetAmmoLeft() const;
 
 protected:
 	UPROPERTY(BlueprintReadOnly, Category = "State")
@@ -68,7 +68,8 @@ private:
 
 	double LastFireTime = 0;
 
-	int CurrentAmmo = 3;
+	UPROPERTY(EditDefaultsOnly, Category = "Firing")
+		int32 CurrentAmmo = 3;
 
 	FVector AimDirection;
 
