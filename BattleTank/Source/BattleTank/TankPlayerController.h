@@ -40,4 +40,9 @@ private:
 		float CrossHairYLocation = 0.33333f;
 	UPROPERTY(EditDefaultsOnly)
 		float LineTraceRange = 10000000.0f; //in centimeters
+
+	virtual void SetPawn(APawn* InPawn) override;
+
+	UFUNCTION()
+		void OnTankDeath();
 };
